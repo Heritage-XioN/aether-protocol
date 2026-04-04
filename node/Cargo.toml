@@ -1,5 +1,5 @@
 [package]
-name = "solochain-template-node"
+name = "aether-node"
 description = "A solochain node template built with Substrate, part of Polkadot Sdk."
 version = "0.0.0"
 license = "Unlicense"
@@ -61,21 +61,21 @@ substrate-frame-rpc-system = { workspace = true, default-features = true }
 frame-benchmarking-cli = { workspace = true, default-features = true }
 
 # Local Dependencies
-solochain-template-runtime = { workspace = true }
+aether-runtime = { workspace = true }
 
 [build-dependencies]
 substrate-build-script-utils = { workspace = true, default-features = true }
 
 [features]
 default = ["std"]
-std = ["solochain-template-runtime/std"]
+std = ["aether-runtime/std"]
 # Dependencies that are only required if runtime benchmarking should be build.
 runtime-benchmarks = [
 	"frame-benchmarking-cli/runtime-benchmarks",
 	"frame-system/runtime-benchmarks",
 	"pallet-transaction-payment/runtime-benchmarks",
 	"sc-service/runtime-benchmarks",
-	"solochain-template-runtime/runtime-benchmarks",
+	"aether-runtime/runtime-benchmarks",
 	"sp-runtime/runtime-benchmarks",
 ]
 # Enable features that allow the runtime to be tried and debugged. Name might be subject to change
@@ -83,6 +83,6 @@ runtime-benchmarks = [
 try-runtime = [
 	"frame-system/try-runtime",
 	"pallet-transaction-payment/try-runtime",
-	"solochain-template-runtime/try-runtime",
+	"aether-runtime/try-runtime",
 	"sp-runtime/try-runtime",
 ]
