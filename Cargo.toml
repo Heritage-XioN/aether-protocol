@@ -1,0 +1,13 @@
+[workspace]
+resolver = "2"
+
+members = [
+    "node",
+    "runtime",
+    "pallets/*",
+]
+
+[workspace.package]
+authors = ["Heritage XioN <your@email.com>"]
+edition = "2021"
+repository = "https://github.com/yourusername/highway-project"
