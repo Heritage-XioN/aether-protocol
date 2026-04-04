@@ -26,6 +26,7 @@ serde_json = { version = "1.0.111", default-features = false }
 clap = { version = "4.4.18" }
 futures = { version = "0.3.30" }
 jsonrpsee = { version = "0.24.7" }
+zeroize = { version = "1.8.2", default-features = false, features = ["alloc"] }
 
 # Substrate Client (sc-)
 sc-basic-authorship = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master" }
@@ -45,14 +46,14 @@ sc-transaction-pool-api = { git = "https://github.com/paritytech/polkadot-sdk.gi
 # Substrate Primitives (sp-)
 sp-api = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master", default-features = false }
 sp-block-builder = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master", default-features = false }
-sp-blockchain = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master" }
+sp-blockchain = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master", default-features = false }
 sp-consensus-aura = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master", default-features = false }
 sp-consensus-grandpa = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master", default-features = false }
 sp-core = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master", default-features = false }
 sp-genesis-builder = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master", default-features = false }
 sp-inherents = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master", default-features = false }
 sp-io = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master", default-features = false }
-sp-keyring = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master" }
+sp-keyring = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master", default-features = false }
 sp-offchain = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master", default-features = false }
 sp-runtime = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master", default-features = false }
 sp-session = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master", default-features = false }
@@ -93,3 +94,5 @@ substrate-wasm-builder = { git = "https://github.com/paritytech/polkadot-sdk.git
 aether-runtime = { path = "runtime", default-features = false }
 aether-pallet-template = { path = "pallets/template", default-features = false }
 aether-node = { path = "node", default-features = false }
+
+
