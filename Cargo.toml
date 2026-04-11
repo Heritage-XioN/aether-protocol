@@ -42,6 +42,7 @@ sc-service = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = 
 sc-telemetry = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master" }
 sc-transaction-pool = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master" }
 sc-transaction-pool-api = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master" }
+sc-chain-spec = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master" }
 
 # Substrate Primitives (sp-)
 sp-api = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master", default-features = false }
