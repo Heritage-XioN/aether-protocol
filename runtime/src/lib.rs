@@ -219,7 +219,10 @@ mod runtime {
     #[runtime::pallet_index(6)]
     pub type Sudo = pallet_sudo;
 
-    // Include the custom logic from the aether-pallet-template in the runtime.
     #[runtime::pallet_index(7)]
+    pub type Treasury = pallet_treasury;
+
+    // Include the custom logic from the aether-pallet-template in the runtime.
+    #[runtime::pallet_index(8)]
     pub type Template = aether_pallet_template;
 }
