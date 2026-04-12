@@ -53,8 +53,10 @@ use sp_version::RuntimeVersion;
 use super::{
     AccountId, Aura, Balance, Balances, Block, BlockNumber, Hash, Nonce, PalletInfo, Runtime,
     RuntimeCall, RuntimeEvent, RuntimeFreezeReason, RuntimeHoldReason, RuntimeOrigin, RuntimeTask,
-    System, Treasury, UNIT, EXISTENTIAL_DEPOSIT, SLOT_DURATION, VERSION,
+    System, Treasury, EXISTENTIAL_DEPOSIT, SLOT_DURATION, UNIT, VERSION,
 };
+
+use fee_handler::DealWithFees;
 
 const NORMAL_DISPATCH_RATIO: Perbill = Perbill::from_percent(75);
 
@@ -164,7 +166,7 @@ parameter_types! {
 
 impl pallet_transaction_payment::Config for Runtime {
     type RuntimeEvent = RuntimeEvent;
-    type OnChargeTransaction = FungibleAdapter<Balances, ()>;
+    type OnChargeTransaction = FungibleAdapter<Balances, DealWithFees<Runtime>>;
     type OperationalFeeMultiplier = ConstU8<5>;
     type WeightToFee = IdentityFee<Balance>;
     type LengthToFee = IdentityFee<Balance>;
@@ -182,17 +184,17 @@ parameter_types! {
     // The Treasury's account ID (derived from this PalletId)
     pub const TreasuryPalletId: PalletId = PalletId(*b"py/trsry");
     pub TreasuryAccount: AccountId = Treasury::account_id();
-    
+
     // How often the treasury spends approved proposals (in blocks) every 7
-    pub const SpendPeriod: BlockNumber = 100_800; // blocks 
-    
+    pub const SpendPeriod: BlockNumber = 100_800; // blocks
+
     // Percentage of spare funds burned each spend period
     // 0% burn
     pub const Burn: Permill = Permill::from_percent(0);
-    
+
     // Bond required to make a proposal (0.1% of requested amount)
     pub const ProposalBond: Permill = Permill::from_perthousand(1);
-    
+
     // Minimum bond amount (100 ATP minimum)
     pub const ProposalBondMinimum: Balance = 100 * UNIT;
 
@@ -216,17 +218,16 @@ impl pallet_treasury::Config for Runtime {
         AccountId,
         ConstU128<{ u128::MAX }>,
     >;
-	type AssetKind = ();
-	type Beneficiary = AccountId;
-	type BeneficiaryLookup = IdentityLookup<Self::Beneficiary>;
-	type Paymaster = PayFromAccount<Balances, TreasuryAccount>;
-	type BalanceConverter = UnityAssetBalanceConversion;
-	type PayoutPeriod = PayoutPeriod;
-	/// Helper type for benchmarks.
-	#[cfg(feature = "runtime-benchmarks")]
-	type BenchmarkHelper = ();
-	type BlockNumberProvider = System;
-    
+    type AssetKind = ();
+    type Beneficiary = AccountId;
+    type BeneficiaryLookup = IdentityLookup<Self::Beneficiary>;
+    type Paymaster = PayFromAccount<Balances, TreasuryAccount>;
+    type BalanceConverter = UnityAssetBalanceConversion;
+    type PayoutPeriod = PayoutPeriod;
+    /// Helper type for benchmarks.
+    #[cfg(feature = "runtime-benchmarks")]
+    type BenchmarkHelper = ();
+    type BlockNumberProvider = System;
 }
 
 /// Configure the aether-pallet-template in pallets/template.
