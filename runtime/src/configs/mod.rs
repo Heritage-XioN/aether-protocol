@@ -23,7 +23,7 @@
 //
 // For more information, please refer to <http://unlicense.org>
 
-mod fee_handler;
+pub mod fee_handler;
 
 // Substrate and Polkadot dependencies
 use frame_support::{
