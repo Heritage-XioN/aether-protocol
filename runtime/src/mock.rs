@@ -1,26 +1,22 @@
-use crate::configs::fee_handler::{DealWithFees, TreasuryAccount};
-use crate::configs::*;
-use frame_support::pallet_prelude::*;
-use frame_support::{derive_impl, parameter_types, weights::WeightToFee};
-
-use sp_runtime::BuildStorage;
-
+use super::{
+    configs::{
+        fee_handler::{DealWithFees, TreasuryAccount},
+        *,
+    },
+    AccountId, Balance, EXISTENTIAL_DEPOSIT,
+};
 use frame_support::{
+    derive_impl,
+    pallet_prelude::*,
+    parameter_types,
     traits::{
         tokens::{PayFromAccount, UnityAssetBalanceConversion},
         ConstU128, ConstU32, ConstU8, VariantCountOf,
     },
-    weights::IdentityFee,
+    weights::{IdentityFee, WeightToFee},
 };
-
-use sp_runtime::AccountId32;
-
 use pallet_transaction_payment::{ConstFeeMultiplier, FungibleAdapter, Multiplier};
-
-use sp_runtime::traits::IdentityLookup;
-
-// Local module imports
-use super::{AccountId, Balance, EXISTENTIAL_DEPOSIT};
+use sp_runtime::{traits::IdentityLookup, AccountId32, BuildStorage};
 
 type Block = frame_system::mocking::MockBlock<Test>;
 

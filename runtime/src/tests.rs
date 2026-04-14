@@ -1,5 +1,5 @@
-use crate::{
-    configs::{fee_handler::TreasuryAccount, TreasuryPalletId},
+use super::{
+    configs::{fee_handler::TreasuryAccount, *},
     mock::*,
     BalancesCall, EXISTENTIAL_DEPOSIT, UNIT,
 };
@@ -9,9 +9,10 @@ use frame_support::{
     dispatch::{GetDispatchInfo, PostDispatchInfo},
 };
 use sp_core::TypedGet;
-use sp_runtime::AccountId32;
-
-use sp_runtime::traits::DispatchTransaction;
+use sp_runtime::{
+    traits::{AccountIdConversion, DispatchTransaction},
+    AccountId32,
+};
 
 pub type TestBalances = pallet_balances::Pallet<Test>;
 
@@ -117,18 +118,18 @@ fn test_fees_go_to_treasury_account() {
     });
 }
 
-// #[test]
-// fn test_treasury_account_is_derived_correctly() {
-//     new_test_ext().execute_with(|| {
-//         let treasury_via_provider = TreasuryAccount::get();
+#[test]
+fn test_treasury_account_is_derived_correctly() {
+    new_test_ext().execute_with(|| {
+        let treasury_via_fee_handler = TreasuryAccount::<Test>::get();
 
-//         // Manually derive using the same method
-//         let pallet_id = TreasuryPalletId::get();
-//         let treasury_via_manual = pallet_id.into_account_truncating();
+        // Manually derive using the same method
+        let pallet_id = TreasuryPalletId::get();
+        let treasury_via_manual = pallet_id.into_account_truncating();
 
-//         assert_eq!(
-//             treasury_via_provider, treasury_via_manual,
-//             "Treasury account derivation mismatch!"
-//         );
-//     });
-// }
+        assert_eq!(
+            treasury_via_fee_handler, treasury_via_manual,
+            "Treasury account derivation mismatch!"
+        );
+    });
+}
