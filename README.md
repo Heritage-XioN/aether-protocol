@@ -1,39 +1,20 @@
-# Substrate Node Template
+# Aether Protocol
 
-A fresh [Substrate](https://substrate.io/) node, ready for hacking :rocket:
+A standalone Layer 1 blockchain optimized for instant, low-cost payments and settlements.
 
-A standalone version of this template is available for each release of Polkadot
-in the [Substrate Developer Hub Parachain
-Template](https://github.com/substrate-developer-hub/substrate-node-template/)
-repository. The parachain template is generated directly at each Polkadot
-release branch from the [Solochain Template in
-Substrate](https://github.com/paritytech/polkadot-sdk/tree/master/templates/solochain)
-upstream
-
-It is usually best to use the stand-alone version to start a new project. All
-bugs, suggestions, and feature requests should be made upstream in the
-[Substrate](https://github.com/paritytech/polkadot-sdk/tree/master/substrate)
-repository.
+Built with [Substrate](https://substrate.io/).
 
 ## Getting Started
 
 Depending on your operating system and Rust version, there might be additional
-packages required to compile this template. Check the
+packages required to compile this project. Check the
 [Install](https://docs.substrate.io/install/) instructions for your platform for
 the most common dependencies. Alternatively, you can use one of the [alternative
 installation](#alternatives-installations) options.
 
-Fetch solochain template code:
-
-```sh
-git clone https://github.com/paritytech/polkadot-sdk-solochain-template.git solochain-template
-
-cd solochain-template
-```
-
 ### Build
 
-🔨 Use the following command to build the node without launching it:
+Use the following command to build the node without launching it:
 
 ```sh
 cargo build --release
@@ -49,7 +30,7 @@ parameters and subcommands:
 ```
 
 You can generate and view the [Rust
-Docs](https://doc.rust-lang.org/cargo/commands/cargo-doc.html) for this template
+Docs](https://doc.rust-lang.org/cargo/commands/cargo-doc.html) for this project
 with this command:
 
 ```sh
@@ -107,7 +88,7 @@ db keystore network
 
 ### Connect with Polkadot-JS Apps Front-End
 
-After you start the node template locally, you can interact with it using the
+After you start the node locally, you can interact with it using the
 hosted version of the [Polkadot/Substrate
 Portal](https://polkadot.js.org/apps/#/explorer?rpc=ws://localhost:9944)
 front-end by connecting to the local node endpoint. A hosted version is also
@@ -120,10 +101,9 @@ also find the source code and instructions for hosting your own instance in the
 If you want to see the multi-node consensus algorithm in action, see [Simulate a
 network](https://docs.substrate.io/tutorials/build-a-blockchain/simulate-network/).
 
-## Template Structure
+## Project Structure
 
-A Substrate project such as this consists of a number of components that are
-spread across a few directories.
+This project consists of several components spread across a few directories.
 
 ### Node
 
@@ -179,7 +159,7 @@ to create pallets and flexibly compose them to create blockchains that can
 address [a variety of needs](https://substrate.io/ecosystem/projects/).
 
 Review the [FRAME runtime implementation](./runtime/src/lib.rs) included in this
-template and note the following:
+project and note the following:
 
 - This file configures several pallets to include in the runtime. Each pallet
   configuration is defined by a code block that begins with `impl
@@ -194,8 +174,7 @@ template and note the following:
 The runtime in this project is constructed using many FRAME pallets that ship
 with [the Substrate
 repository](https://github.com/paritytech/polkadot-sdk/tree/master/substrate/frame) and a
-template pallet that is [defined in the
-`pallets`](./pallets/template/src/lib.rs) directory.
+custom pallet defined in the `pallets` directory.
 
 A FRAME pallet is comprised of a number of blockchain primitives, including:
 
@@ -229,4 +208,4 @@ the correct dependencies, activate direnv `direnv allow`.
 
 Please follow the [Substrate Docker instructions
 here](https://github.com/paritytech/polkadot-sdk/blob/master/substrate/docker/README.md) to
-build the Docker container with the Substrate Node Template binary.
+build the Docker container with the Aether Protocol binary.
