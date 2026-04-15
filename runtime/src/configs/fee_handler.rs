@@ -2,15 +2,9 @@ use frame_support::{
     pallet_prelude::*,
     traits::{fungible::Credit, tokens::imbalance::ResolveTo, OnUnbalanced},
 };
-
 use frame_system::pallet_prelude::AccountIdFor;
 use sp_runtime::traits::AccountIdConversion;
 
-// use super::{
-//     AccountId, Aura, Balance, Balances, Block, BlockNumber, Hash, Nonce, PalletInfo, Runtime,
-//     RuntimeCall, RuntimeEvent, RuntimeFreezeReason, RuntimeHoldReason, RuntimeOrigin, RuntimeTask,
-//     System, Treasury, UNIT, EXISTENTIAL_DEPOSIT, SLOT_DURATION, VERSION,
-// };
 
 /// the Treasury pallet's account ID (derive from its PalletId)
 pub struct TreasuryAccount<T>(sp_core::sp_std::marker::PhantomData<T>);
