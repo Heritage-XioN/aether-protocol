@@ -1,0 +1,42 @@
+name: setup-rust
+description: Install Rust toolchain, protobuf compiler, and Rust cache for CI jobs.
+
+inputs:
+  components:
+    description: Comma-separated list of Rust components to install.
+    required: false
+    default: rust-src
+  targets:
+    description: Comma-separated list of Rust targets to install.
+    required: false
+    default: wasm32-unknown-unknown
+  install-protobuf:
+    description: Whether to install protobuf-compiler via apt-get.
+    required: false
+    default: "true"
+  cache-all-crates:
+    description: Whether to cache all Rust crates.
+    required: false
+    default: "true"
+  cache-on-failure:
+    description: Whether to keep cache when a job fails.
+    required: false
+    default: "true"
+
+runs:
+  using: composite
+  steps:
+    - name: Install system dependencies
+      if: ${{ inputs.install-protobuf == 'true' }}
+      shell: bash
+      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends protobuf-compiler
+    - name: Install stable Rust toolchain
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        components: ${{ inputs.components }}
+        targets: ${{ inputs.targets }}
+    - name: Rust cache
+      uses: Swatinem/rust-cache@v2
+      with:
+        cache-all-crates: ${{ inputs.cache-all-crates }}
+        cache-on-failure: ${{ inputs.cache-on-failure }}

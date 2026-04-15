@@ -1,0 +1,64 @@
+name: ci/lint
+
+on:
+  pull_request:
+    branches:
+      - dev
+      - master
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+  WASM_BUILD_NO_COLOR: 1
+
+jobs:
+  fmt:
+    name: lint-fmt
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Install nightly toolchain for rustfmt
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: rustfmt
+      - name: Cargo fmt (check)
+        run: cargo +nightly fmt --all -- --check
+
+  clippy:
+    name: lint-clippy
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      SKIP_WASM_BUILD: 1
+      RUSTFLAGS: -Dwarnings
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Setup Rust CI environment
+        uses: ./.github/actions/setup-rust
+        with:
+          components: clippy,rust-src
+      - name: Cargo clippy
+        run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
