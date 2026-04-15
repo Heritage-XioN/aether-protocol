@@ -5,7 +5,6 @@ use frame_support::{
 use frame_system::pallet_prelude::AccountIdFor;
 use sp_runtime::traits::AccountIdConversion;
 
-
 /// the Treasury pallet's account ID (derive from its PalletId)
 pub struct TreasuryAccount<T>(sp_core::sp_std::marker::PhantomData<T>);
 
@@ -39,8 +38,13 @@ where
         // transaction tip ( if it was provided)
         if let Some(tip) = fees_then_tips.next() {
             // send 100% of tip to Treasury
-            // will be modifed to send tips to the validators
+            // will be modified to send tips to the validators
             ResolveTo::<TreasuryAccount<R>, pallet_balances::Pallet<R>>::on_unbalanced(tip);
+        }
+
+        // handles any additional credits provided by upstream changes
+        for credit in fees_then_tips {
+            ResolveTo::<TreasuryAccount<R>, pallet_balances::Pallet<R>>::on_unbalanced(credit);
         }
     }
 }

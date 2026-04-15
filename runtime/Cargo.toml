@@ -96,6 +96,7 @@ std = [
 	"sp-consensus-aura/std",
 	"sp-consensus-grandpa/std",
 	"sp-core/std",
+	"sp-io/std",
 	"sp-genesis-builder/std",
 	"sp-inherents/std",
 	"sp-keyring/std",
