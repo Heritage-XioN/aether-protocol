@@ -1,7 +1,7 @@
 [package]
 name = "aether-runtime"
 description = "A solochain runtime template built with Substrate, part of Polkadot Sdk."
-version = "0.0.0"
+version = "0.1.0"
 license = "Unlicense"
 authors.workspace = true
 homepage.workspace = true
@@ -35,6 +35,7 @@ pallet-grandpa = { workspace = true }
 pallet-sudo = { workspace = true }
 pallet-timestamp = { workspace = true }
 pallet-transaction-payment = { workspace = true }
+pallet-treasury = {workspace = true }
 
 # primitives
 sp-api = { workspace = true }
@@ -42,6 +43,7 @@ sp-block-builder = { workspace = true }
 sp-consensus-aura = { features = ["serde"], workspace = true }
 sp-consensus-grandpa = { features = ["serde"], workspace = true }
 sp-core = { features = ["serde"], workspace = true }
+sp-io = { workspace = true }
 sp-genesis-builder = { workspace = true }
 sp-inherents = { workspace = true }
 sp-keyring = { workspace = true }
@@ -86,6 +88,7 @@ std = [
 	"pallet-timestamp/std",
 	"pallet-transaction-payment-rpc-runtime-api/std",
 	"pallet-transaction-payment/std",
+	"pallet-treasury/std",
 	"scale-info/std",
 	"serde_json/std",
 	"sp-api/std",
@@ -93,6 +96,7 @@ std = [
 	"sp-consensus-aura/std",
 	"sp-consensus-grandpa/std",
 	"sp-core/std",
+	"sp-io/std",
 	"sp-genesis-builder/std",
 	"sp-inherents/std",
 	"sp-keyring/std",

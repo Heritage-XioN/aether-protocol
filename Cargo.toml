@@ -42,6 +42,7 @@ sc-service = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = 
 sc-telemetry = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master" }
 sc-transaction-pool = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master" }
 sc-transaction-pool-api = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master" }
+sc-chain-spec = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master" }
 
 # Substrate Primitives (sp-)
 sp-api = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master", default-features = false }
@@ -80,6 +81,7 @@ pallet-sudo = { git = "https://github.com/paritytech/polkadot-sdk.git", branch =
 pallet-timestamp = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master", default-features = false }
 pallet-transaction-payment = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master", default-features = false }
 pallet-transaction-payment-rpc = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master" }
+pallet-treasury = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master", default-features = false }
 
 # RPC Runtime APIs
 frame-system-rpc-runtime-api = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "master", default-features = false }

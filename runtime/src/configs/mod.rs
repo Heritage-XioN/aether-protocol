@@ -23,29 +23,40 @@
 //
 // For more information, please refer to <http://unlicense.org>
 
+pub mod fee_handler;
+
 // Substrate and Polkadot dependencies
 use frame_support::{
     derive_impl,
     dispatch::DispatchClass,
     parameter_types,
-    traits::{ConstBool, ConstU128, ConstU32, ConstU64, ConstU8, VariantCountOf},
+    traits::{
+        tokens::{PayFromAccount, UnityAssetBalanceConversion},
+        ConstBool, ConstU128, ConstU32, ConstU64, ConstU8, VariantCountOf,
+    },
     weights::{
         constants::{RocksDbWeight, WEIGHT_REF_TIME_PER_SECOND},
         IdentityFee, Weight,
     },
+    PalletId,
 };
 use frame_system::limits::{BlockLength, BlockWeights};
 use pallet_transaction_payment::{ConstFeeMultiplier, FungibleAdapter, Multiplier};
 use sp_consensus_aura::sr25519::AuthorityId as AuraId;
-use sp_runtime::{traits::One, Perbill};
+use sp_runtime::{
+    traits::{IdentityLookup, One},
+    Perbill, Permill,
+};
 use sp_version::RuntimeVersion;
 
 // Local module imports
 use super::{
     AccountId, Aura, Balance, Balances, Block, BlockNumber, Hash, Nonce, PalletInfo, Runtime,
     RuntimeCall, RuntimeEvent, RuntimeFreezeReason, RuntimeHoldReason, RuntimeOrigin, RuntimeTask,
-    System, EXISTENTIAL_DEPOSIT, SLOT_DURATION, VERSION,
+    System, Treasury, EXISTENTIAL_DEPOSIT, SLOT_DURATION, UNIT, VERSION,
 };
+
+use fee_handler::DealWithFees;
 
 const NORMAL_DISPATCH_RATIO: Perbill = Perbill::from_percent(75);
 
@@ -155,7 +166,7 @@ parameter_types! {
 
 impl pallet_transaction_payment::Config for Runtime {
     type RuntimeEvent = RuntimeEvent;
-    type OnChargeTransaction = FungibleAdapter<Balances, ()>;
+    type OnChargeTransaction = FungibleAdapter<Balances, DealWithFees<Runtime>>;
     type OperationalFeeMultiplier = ConstU8<5>;
     type WeightToFee = IdentityFee<Balance>;
     type LengthToFee = IdentityFee<Balance>;
@@ -167,6 +178,56 @@ impl pallet_sudo::Config for Runtime {
     type RuntimeEvent = RuntimeEvent;
     type RuntimeCall = RuntimeCall;
     type WeightInfo = pallet_sudo::weights::SubstrateWeight<Runtime>;
+}
+
+parameter_types! {
+    // The Treasury's account ID (derived from this PalletId)
+    pub const TreasuryPalletId: PalletId = PalletId(*b"py/trsry");
+    pub TreasuryAccount: AccountId = Treasury::account_id();
+
+    // How often the treasury spends approved proposals (in blocks) every 7
+    pub const SpendPeriod: BlockNumber = 100_800; // blocks
+
+    // Percentage of spare funds burned each spend period
+    // 0% burn
+    pub const Burn: Permill = Permill::from_percent(0);
+
+    // Bond required to make a proposal (0.1% of requested amount)
+    pub const ProposalBond: Permill = Permill::from_perthousand(1);
+
+    // Minimum bond amount (100 ATP minimum)
+    pub const ProposalBondMinimum: Balance = 100 * UNIT;
+
+    // How long a beneficiary has to claim an approved spend (in blocks) 14 days
+    pub const PayoutPeriod: BlockNumber = 201_600; // blocks
+}
+
+impl pallet_treasury::Config for Runtime {
+    type Currency = Balances;
+    type RejectOrigin = frame_system::EnsureRoot<AccountId>;
+    type RuntimeEvent = RuntimeEvent;
+    type SpendPeriod = SpendPeriod;
+    type Burn = Burn;
+    type PalletId = TreasuryPalletId;
+    type BurnDestination = ();
+    type WeightInfo = pallet_treasury::weights::SubstrateWeight<Runtime>;
+    type SpendFunds = ();
+    type MaxApprovals = ConstU32<100>;
+    type SpendOrigin = frame_system::EnsureWithSuccess<
+        frame_system::EnsureRoot<AccountId>,
+        AccountId,
+        ConstU128<{ u128::MAX }>,
+    >;
+    type AssetKind = ();
+    type Beneficiary = AccountId;
+    type BeneficiaryLookup = IdentityLookup<Self::Beneficiary>;
+    type Paymaster = PayFromAccount<Balances, TreasuryAccount>;
+    type BalanceConverter = UnityAssetBalanceConversion;
+    type PayoutPeriod = PayoutPeriod;
+    /// Helper type for benchmarks.
+    #[cfg(feature = "runtime-benchmarks")]
+    type BenchmarkHelper = ();
+    type BlockNumberProvider = System;
 }
 
 /// Configure the aether-pallet-template in pallets/template.
