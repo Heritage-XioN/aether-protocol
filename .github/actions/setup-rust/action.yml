@@ -1,15 +1,27 @@
 name: setup-rust
-description: Install Rust toolchain, protobuf compiler, and Rust cache for CI jobs.
+description: Install Rust toolchain, core build dependencies, protobuf compiler, and Rust cache for CI jobs.
 
 inputs:
+  toolchain-file:
+    description: Path to rust-toolchain.toml file to source defaults from.
+    required: false
+    default: env-setup/rust-toolchain.toml
+  toolchain:
+    description: Optional Rust toolchain override. Defaults to toolchain file channel.
+    required: false
+    default: ""
   components:
-    description: Comma-separated list of Rust components to install.
+    description: Optional comma-separated Rust components override. Defaults to toolchain file components.
     required: false
-    default: rust-src
+    default: ""
   targets:
-    description: Comma-separated list of Rust targets to install.
+    description: Optional comma-separated Rust targets override. Defaults to toolchain file targets.
     required: false
-    default: wasm32-unknown-unknown
+    default: ""
+  install-system-deps:
+    description: Whether to install core Linux build dependencies via apt-get.
+    required: false
+    default: "true"
   install-protobuf:
     description: Whether to install protobuf-compiler via apt-get.
     required: false
@@ -26,15 +38,96 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Install system dependencies
-      if: ${{ inputs.install-protobuf == 'true' }}
+    - name: Install core system dependencies
+      if: ${{ inputs.install-system-deps == 'true' }}
       shell: bash
-      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends protobuf-compiler
-    - name: Install stable Rust toolchain
-      uses: dtolnay/rust-toolchain@stable
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends \
+          build-essential \
+          clang \
+          cmake \
+          git \
+          libclang-dev \
+          libssl-dev \
+          libudev-dev \
+          llvm \
+          llvm-dev \
+          pkg-config
+    - name: Install protobuf compiler
+      if: ${{ inputs.install-system-deps == 'true' && inputs.install-protobuf == 'true' }}
+      shell: bash
+      run: sudo apt-get install -y --no-install-recommends protobuf-compiler
+    - name: Configure LLVM/libclang environment for clang-sys
+      if: ${{ inputs.install-system-deps == 'true' }}
+      shell: bash
+      run: |
+        LLVM_CONFIG_BIN=""
+        for candidate in llvm-config llvm-config-20 llvm-config-19 llvm-config-18 llvm-config-17 llvm-config-16 llvm-config-15 llvm-config-14; do
+          if command -v "$candidate" >/dev/null 2>&1; then
+            LLVM_CONFIG_BIN="$(command -v "$candidate")"
+            break
+          fi
+        done
+
+        if [ -z "$LLVM_CONFIG_BIN" ]; then
+          echo "::error::llvm-config not found after installing LLVM packages."
+          exit 1
+        fi
+
+        echo "LLVM_CONFIG_PATH=$LLVM_CONFIG_BIN" >> "$GITHUB_ENV"
+
+        LLVM_LIBDIR="$("$LLVM_CONFIG_BIN" --libdir)"
+        LIBCLANG_DIR=""
+
+        if compgen -G "$LLVM_LIBDIR/libclang.so*" >/dev/null; then
+          LIBCLANG_DIR="$LLVM_LIBDIR"
+        else
+          for dir in /usr/lib/llvm-*/lib /usr/lib/x86_64-linux-gnu; do
+            if compgen -G "$dir/libclang.so*" >/dev/null; then
+              LIBCLANG_DIR="$dir"
+              break
+            fi
+          done
+        fi
+
+        if [ -z "$LIBCLANG_DIR" ]; then
+          echo "::error::libclang shared library not found after installing libclang-dev."
+          exit 1
+        fi
+
+        echo "LIBCLANG_PATH=$LIBCLANG_DIR" >> "$GITHUB_ENV"
+    - name: Read repository Rust toolchain defaults
+      id: repo-toolchain
+      shell: bash
+      run: |
+        python3 - <<'PY'
+        import os
+        import pathlib
+        import tomllib
+
+        path = pathlib.Path("${{ inputs.toolchain-file }}")
+        if not path.is_file():
+            raise SystemExit(f"rust-toolchain file not found: {path}")
+
+        data = tomllib.loads(path.read_text(encoding="utf-8"))
+        toolchain = data.get("toolchain", {})
+
+        channel = str(toolchain.get("channel", "stable"))
+        components = ",".join(toolchain.get("components", []))
+        targets = ",".join(toolchain.get("targets", []))
+
+        with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+            output.write(f"channel={channel}\n")
+            output.write(f"components={components}\n")
+            output.write(f"targets={targets}\n")
+        PY
+    - name: Install Rust toolchain
+      uses: dtolnay/rust-toolchain@master
       with:
-        components: ${{ inputs.components }}
-        targets: ${{ inputs.targets }}
+        toolchain: ${{ inputs.toolchain != '' && inputs.toolchain || steps.repo-toolchain.outputs.channel }}
+        components: ${{ inputs.components != '' && inputs.components || steps.repo-toolchain.outputs.components }}
+        targets: ${{ inputs.targets != '' && inputs.targets || steps.repo-toolchain.outputs.targets }}
     - name: Rust cache
       uses: Swatinem/rust-cache@v2
       with:

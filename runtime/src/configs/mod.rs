@@ -224,9 +224,6 @@ impl pallet_treasury::Config for Runtime {
     type Paymaster = PayFromAccount<Balances, TreasuryAccount>;
     type BalanceConverter = UnityAssetBalanceConversion;
     type PayoutPeriod = PayoutPeriod;
-    /// Helper type for benchmarks.
-    #[cfg(feature = "runtime-benchmarks")]
-    type BenchmarkHelper = ();
     type BlockNumberProvider = System;
 }
 

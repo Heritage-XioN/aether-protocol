@@ -35,10 +35,11 @@ jobs:
         with:
           fetch-depth: 1
           persist-credentials: false
-      - name: Install stable toolchain for rustfmt
-        uses: dtolnay/rust-toolchain@stable
+      - name: Setup Rust CI environment
+        uses: ./.github/actions/setup-rust
         with:
-          components: rustfmt
+          install-system-deps: "false"
+          install-protobuf: "false"
       - name: Cargo fmt (check)
         run: cargo fmt --all -- --check
 
@@ -58,7 +59,5 @@ jobs:
           persist-credentials: false
       - name: Setup Rust CI environment
         uses: ./.github/actions/setup-rust
-        with:
-          components: clippy,rust-src
       - name: Cargo clippy
         run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
