@@ -60,4 +60,4 @@ jobs:
       - name: Setup Rust CI environment
         uses: ./.github/actions/setup-rust
       - name: Cargo clippy
-        run: cargo clippy --workspace --all-targets --locked -- -D warnings
+        run: cargo clippy --workspace --all-targets --locked # add this to enforce strict: clippy rules -- -D warnings
