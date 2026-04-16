@@ -1,3 +1,4 @@
+#![allow(clippy::result_large_err)]
 //! Substrate Node Template CLI library.
 #![warn(missing_docs)]
 
