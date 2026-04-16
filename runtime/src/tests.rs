@@ -87,7 +87,7 @@ fn test_fees_go_to_treasury_account() {
 
         // Calculate expected fee
         let final_sender_balance = TestBalances::free_balance(AccountId32::new(sender));
-        let final_recipient_balance = TestBalances::free_balance(&AccountId32::new(recipient));
+        let final_recipient_balance = TestBalances::free_balance(AccountId32::new(recipient));
         let final_treasury_balance = TestBalances::free_balance(&treasury_account);
 
         // Sender lost: transfer_amount + fee

@@ -132,10 +132,8 @@ impl pallet_treasury::Config for Test {
 
 // Build genesis storage according to the mock runtime.
 pub fn new_test_ext() -> sp_io::TestExternalities {
-    let ext = frame_system::GenesisConfig::<Test>::default()
+    frame_system::GenesisConfig::<Test>::default()
         .build_storage()
         .unwrap()
-        .into();
-
-    ext
+        .into()
 }

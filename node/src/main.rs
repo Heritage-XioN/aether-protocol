@@ -1,3 +1,4 @@
+#![allow(clippy::result_large_err)]
 //! Substrate Node Template CLI library.
 #![warn(missing_docs)]
 
@@ -9,5 +10,5 @@ mod rpc;
 mod service;
 
 fn main() -> sc_cli::Result<()> {
-	command::run()
+    command::run()
 }

@@ -1,6 +1,6 @@
 use aether_runtime::WASM_BINARY;
+use sc_chain_spec::Properties;
 use sc_service::ChainType;
-use sc_chain_spec::Properties; 
 
 /// Specialized `ChainSpec`. This is a specialization of the general Substrate ChainSpec type.
 pub type ChainSpec = sc_service::GenericChainSpec;
@@ -8,7 +8,7 @@ pub type ChainSpec = sc_service::GenericChainSpec;
 pub fn development_chain_spec() -> Result<ChainSpec, String> {
     let mut properties = Properties::new();
     properties.insert("tokenSymbol".into(), "AETH".into());
-    
+
     Ok(ChainSpec::builder(
         WASM_BINARY.ok_or_else(|| "Development wasm not available".to_string())?,
         None,

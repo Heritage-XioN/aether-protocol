@@ -1,3 +1,4 @@
+#![allow(clippy::result_large_err)]
 //! Service and ServiceFactory implementation. Specialized wrapper over substrate service.
 
 use aether_runtime::{self, apis::RuntimeApi, opaque::Block};
